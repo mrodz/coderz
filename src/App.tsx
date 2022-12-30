@@ -1,7 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
+import { useEffect } from 'react';
 
 function App() {
+	useEffect(() => {
+		window.electron.signalClose()
+	}, [])
+
 	return (
 		<div className="App">
 			<header className="App-header">
