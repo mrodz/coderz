@@ -4,9 +4,7 @@ import { useEffect } from 'react';
 
 function App() {
 	useEffect(() => {
-
 		window.electron.signalClose()
-		window.electron.nativeCall('println', 'IPL now')
 	}, [])
 
 	return (

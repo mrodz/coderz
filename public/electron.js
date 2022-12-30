@@ -25,8 +25,8 @@ const createWindow = async () => {
 	})
 
 	splashWindow = new BrowserWindow({
-		width: 400,
-		height: 600,
+		width: 200,
+		height: 300,
 		show: true,
 		frame: false,
 		webPreferences: {
@@ -43,8 +43,6 @@ const createWindow = async () => {
 	)
 
 	ipcMain.handle('remove-splash-screen', () => {
-		console.log('showing')
-		// console.log(splashWindow, mainWindow)
 		splashWindow.hide()
 		mainWindow.show()
 	})
