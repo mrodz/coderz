@@ -1,7 +1,14 @@
 import logo from './logo.svg';
 import './App.css';
+import { useEffect } from 'react';
 
 function App() {
+	useEffect(() => {
+
+		window.electron.signalClose()
+		window.electron.nativeCall('println', 'IPL now')
+	}, [])
+
 	return (
 		<div className="App">
 			<header className="App-header">

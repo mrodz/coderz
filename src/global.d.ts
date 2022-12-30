@@ -5,8 +5,9 @@ declare module '*.jpeg'
 declare global {
 	interface Window {
 		electron: readonly {
-			nativeCall: (functionName: string, args: any) => void
-		}
+			nativeCall: (functionName: string, args: any) => void,
+			signalClose: () => void
+		},
 	}
 }
 
