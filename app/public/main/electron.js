@@ -7,18 +7,18 @@ const {
 // const path = require('path')
 
 const bridgeFunctions = require('./bridge-functions')
-const { createAuthWindow, createLogoutWindow } = require('./auth-process');
-const { createAppWindow, getMainWindow, getSplashWindow } = require('./app-process');
-const authService = require('../services/auth-service');
-const apiService = require('../services/api-service');
+const { createAuthWindow, createLogoutWindow } = require('./auth-process')
+const { createAppWindow, getMainWindow, getSplashWindow } = require('./app-process')
+const authService = require('../services/auth-service')
+const apiService = require('../services/api-service')
 
 const showWindow = async () => {
 	try {
 		await authService.refreshTokens()
-		console.log('signed in!');
+		console.log('signed in!')
 		createAppWindow()
 	} catch (err) {
-		console.log('need auth');
+		console.log('need auth')
 		createAuthWindow()
 	}
 }
@@ -28,20 +28,18 @@ const showWindow = async () => {
 // Some APIs can only be used after this event occurs.
 // app.whenReady().then(createWindow)
 app.on('ready', () => {
-	ipcMain.handle('remove-splash-screen', () => {
+	ipcMain.handle('main:remove-splash-screen', () => {
 		getSplashWindow().hide()
 		getMainWindow().show()
 	})
 
-	ipcMain.handle('auth:get-profile', authService.getProfile);
-	ipcMain.handle('api:get-private-data', apiService.getPrivateData);
+	ipcMain.handle('auth:get-profile', authService.getProfile)
+	ipcMain.handle('api:get-private-data', apiService.getPrivateData)
 	ipcMain.on('auth:log-out', () => {
 		for (const window of BrowserWindow.getAllWindows()) {
 			window.close()
 		}
-
 		createLogoutWindow()
-		showWindow()
 	})
 
 	for (const bridgeFunction in bridgeFunctions) {

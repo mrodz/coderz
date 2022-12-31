@@ -34,6 +34,11 @@ async function createAppWindow() {
 		}
 	})
 
+	// closing the main window should close all other windows, too.
+	mainWindow.on('close', () => {
+		splashWindow?.close?.()
+	})
+
 	splashWindow.loadFile('./public/splash.html')
 	mainWindow.loadURL(
 		isDev

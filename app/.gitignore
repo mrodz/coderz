@@ -14,6 +14,7 @@
 
 # misc
 env-variables.*
+auth-format.jsonc
 .env
 .DS_Store
 .env.local

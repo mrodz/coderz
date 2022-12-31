@@ -1,29 +1,29 @@
 // services/auth-service.js
 
-const jwtDecode = require('jwt-decode');
-const axios = require('axios');
-const url = require('url');
-const envVariables = require('../env-variables');
-const keytar = require('keytar');
-const os = require('os');
+const jwtDecode = require('jwt-decode')
+const axios = require('axios')
+const url = require('url')
+const envVariables = require('../env-variables')
+const keytar = require('keytar')
+const os = require('os')
 
-const { apiIdentifier, auth0Domain, clientId } = envVariables;
+const { apiIdentifier, auth0Domain, clientId } = envVariables
 
-const redirectUri = 'http://localhost/callback';
+const redirectUri = 'http://localhost/callback'
 
-const keytarService = 'electron-openid-oauth';
-const keytarAccount = os.userInfo().username;
+const keytarService = 'electron-openid-oauth'
+const keytarAccount = os.userInfo().username
 
-let accessToken = null;
-let profile = null;
-let refreshToken = null;
+let accessToken = null
+let profile = null
+let refreshToken = null
 
 function getAccessToken() {
-	return accessToken;
+	return accessToken
 }
 
 function getProfile() {
-	return profile;
+	return profile
 }
 
 function getAuthenticationURL() {
@@ -37,12 +37,15 @@ function getAuthenticationURL() {
 		clientId +
 		"&" +
 		"redirect_uri=" +
-		redirectUri
-	);
+		redirectUri +
+		"&" +
+		"audience=" +
+		"https://coderz-app.us.auth0.com/api/v2/"
+	)
 }
 
 async function refreshTokens() {
-	const refreshToken = await keytar.getPassword(keytarService, keytarAccount);
+	const refreshToken = await keytar.getPassword(keytarService, keytarAccount)
 
 	if (refreshToken) {
 		const refreshOptions = {
@@ -53,34 +56,36 @@ async function refreshTokens() {
 				grant_type: 'refresh_token',
 				client_id: clientId,
 				refresh_token: refreshToken,
+				audience: 'https://coderz-app.us.auth0.com/api/v2/'
 			}
-		};
+		}
 
 		try {
-			const response = await axios(refreshOptions);
+			const response = await axios(refreshOptions)
 
-			accessToken = response.data.access_token;
-			profile = jwtDecode(response.data.id_token);
+			accessToken = response.data.access_token
+			profile = jwtDecode(response.data.id_token)
 		} catch (error) {
-			await logout();
+			await logout()
 
-			throw error;
+			throw error
 		}
 	} else {
-		throw new Error("No available refresh token.");
+		throw new Error("No available refresh token.")
 	}
 }
 
 async function loadTokens(callbackURL) {
-	const urlParts = url.parse(callbackURL, true);
-	const query = urlParts.query;
+	const urlParts = url.parse(callbackURL, true)
+	const query = urlParts.query
 
 	const exchangeOptions = {
 		'grant_type': 'authorization_code',
 		'client_id': clientId,
 		'code': query.code,
 		'redirect_uri': redirectUri,
-	};
+		'audience': 'https://coderz-app.us.auth0.com/api/v2/'
+	}
 
 	const options = {
 		method: 'POST',
@@ -89,34 +94,34 @@ async function loadTokens(callbackURL) {
 			'content-type': 'application/json'
 		},
 		data: JSON.stringify(exchangeOptions),
-	};
+	}
 
 	try {
-		const response = await axios(options);
+		const response = await axios(options)
 
-		accessToken = response.data.access_token;
-		profile = jwtDecode(response.data.id_token);
-		refreshToken = response.data.refresh_token;
+		accessToken = response.data.access_token
+		profile = jwtDecode(response.data.id_token)
+		refreshToken = response.data.refresh_token
 
 		if (refreshToken) {
-			await keytar.setPassword(keytarService, keytarAccount, refreshToken);
+			await keytar.setPassword(keytarService, keytarAccount, refreshToken)
 		}
 	} catch (error) {
-		await logout();
+		await logout()
 
-		throw error;
+		throw error
 	}
 }
 
 async function logout() {
-	await keytar.deletePassword(keytarService, keytarAccount);
-	accessToken = null;
-	profile = null;
-	refreshToken = null;
+	await keytar.deletePassword(keytarService, keytarAccount)
+	accessToken = null
+	profile = null
+	refreshToken = null
 }
 
 function getLogOutUrl() {
-	return `https://${auth0Domain}/v2/logout`;
+	return `https://${auth0Domain}/v2/logout`
 }
 
 module.exports = {
@@ -127,4 +132,4 @@ module.exports = {
 	loadTokens,
 	logout,
 	refreshTokens,
-};
+}
