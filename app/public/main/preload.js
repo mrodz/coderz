@@ -3,7 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 process.once('loaded', () => {
 	contextBridge.exposeInMainWorld('electron', {
 		nativeCall: (functionName, ...args) => ipcRenderer.invoke(functionName, ...args),
-		signalClose: () => ipcRenderer.invoke('remove-splash-screen'),
+		signalClose: () => ipcRenderer.invoke('main:remove-splash-screen'),
 		getProfile: () => ipcRenderer.invoke('auth:get-profile'),
 		logOut: () => ipcRenderer.send('auth:log-out'),
 		getPrivateData: () => ipcRenderer.invoke('api:get-private-data'),
