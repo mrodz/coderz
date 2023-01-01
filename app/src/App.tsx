@@ -8,6 +8,17 @@ function App() {
 		}).catch(e => {
 			console.error(e)
 		})
+
+		const client = new WebSocket('ws://localhost:5000')
+
+		client.onopen = () => {
+			client.send('hi')
+		}
+
+		client.onmessage = (message) => {
+			alert(JSON.stringify(message))
+		}
+
 	}, [])
 
 	return (

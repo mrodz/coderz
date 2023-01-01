@@ -25,11 +25,17 @@
     "http-errors": "~1.8.1",
     "jwks-rsa": "^3.0.0",
     "morgan": "~1.10.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "ws": "^8.11.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/dotenv": "^8.2.0",
-    "@types/express": "^4.17.15"
+    "@types/express": "^4.17.15",
+    "@types/ws": "^8.5.4"
+  },
+  "optionalDependencies": {
+    "bufferuti": "*",
+    "utf-8-validate": "^5.0.10"
   }
 }
